@@ -1,0 +1,32 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerControlls : MonoBehaviour
+{
+    [SerializeField] private MovingManager movements;
+    [SerializeField] private SpriteRenderer sprite;
+    private float cooldown;
+    private  const float MOVEMENT_COOLDOWN = 0.5f;
+    private Vector2 roomPosition;
+    
+
+    // Update is called once per frame
+    void Update()
+    {
+        cooldown -= Time.deltaTime;
+        if (Input.GetAxisRaw("Vertical")!=0 && cooldown<=0)
+        {
+            cooldown = MOVEMENT_COOLDOWN;
+            roomPosition =  Input.GetAxisRaw("Vertical");
+            movements.UpdateTargetPosition(roomPosition.x*Utils.UNIT_SIZE, roomPosition.y*Utils.UNIT_SIZE); //Il faut pas lire directement les movements public c temporaire
+        }
+        if (Input.GetAxisRaw("Horizontal") != 0 && cooldown <= 0)
+        {
+            sprite.flipX = Input.GetAxisRaw("Horizontal")<0;
+            cooldown = MOVEMENT_COOLDOWN;
+            movements.targetPosition.x += Input.GetAxisRaw("Horizontal");
+            movements.UpdateTargetPosition(movements.targetPosition); //Il faut pas lire directement les movements public c temporaire
+        }
+    }
+}
